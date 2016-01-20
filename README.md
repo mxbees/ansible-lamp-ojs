@@ -36,6 +36,12 @@ You'll need to install all of these on your local machine before using this play
     - Pick whatever admin username and password you'd like.
     - You might get a warning that OJS was unable to write to config.inc.php. If you get this screen, copy the config and paste it into over the config.inc.php.
     - And, voila! You should have a working instance of OJS3b.
+    
+##What's in this repo:
+
+- default: the apache config for the virtual machine. Should change this if you change the document root in playbook.yml.
+- playbook.yml: the ansible playbook for provisioning the virtual machine. This is the file you edit if you want add a root password for mysql, and other such things.
+- Vagrantfile: the instructions for building the virtual machine. This is the file to change if you want to use a different linux distro. Right now it uses Debian 8.
 
 [pesterhazy]: https://github.com/pesterhazy/vagrant-lamp-ansible
 [ojs3]: https://github.com/pkp/ojs
