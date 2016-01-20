@@ -1,0 +1,88 @@
+---
+- hosts: all
+  sudo: true
+  tasks:
+
+  - name: install misc packages
+    apt: name='{{ item }}' state=latest update_cache=yes
+    with_items:
+      - git
+      - curl
+      - unzip
+      - vim
+
+  # Apache2 
+  
+  - name: install apache2
+    apt: name='{{ item }}' state=latest
+    with_items:
+      - apache2
+      
+  - file: src=/etc/apache2/mods-available/rewrite.load dest=/etc/apache2/mods-enabled/rewrite.load state=link
+    notify: restart apache
+
+  - file: src=/etc/apache2/mods-available/headers.load dest=/etc/apache2/mods-enabled/headers.load state=link
+    notify: restart apache
+
+  - file: path=/etc/apache2/conf.d state=directory
+  
+  - copy: src=default dest=/etc/apache2/sites-available/000-default.conf owner=vagrant group=vagrant mode=0777
+
+  # MySQL
+
+  - name: install MySQL
+    apt: name='{{ item }}' state=latest
+    with_items:
+      - mysql-server
+      - mysql-client
+      - python-mysqldb
+
+  - name: add mysql user
+    mysql_user: name=vagrant
+                host='{{ item }}'
+                password=vagrant priv=*.*:ALL,GRANT
+                login_user=root
+                login_password=
+    with_items:
+      - '%'
+      - localhost
+
+  # PHP
+
+  - name: install PHP5 packages
+    apt: name='{{ item }}' state=latest
+    with_items:
+      - php5
+      - libapache2-mod-php5
+      - php5-cli
+      - php5-mysql
+      - php-pear
+      - php5-curl
+
+  # Set up site
+  
+  - git: repo=https://github.com/pkp/ojs.git dest=/var/www/html/ojs3/ update=no
+  
+  - shell: curl -sS https://getcomposer.org/installer | php chdir=/var/www/html/ojs3/lib/pkp/
+      
+  - shell: php composer.phar install chdir=/var/www/html/ojs3/lib/pkp/
+
+  - file: path='{{ item }}' owner=vagrant group=vagrant recurse=yes mode=0777 state=directory
+    with_items:
+      - /var/www/html/ojs3
+      - /var/www/html/ojs3/files
+      - /var/www/html/ojs3/public
+      - /var/www/html/ojs3/cache
+      - /var/www/html/ojs3/cache/t_cache
+      - /var/www/html/ojs3/cache/t_config
+      - /var/www/html/ojs3/cache/t_compile
+      - /var/www/html/ojs3/cache/_db
+      
+
+  # Common stuff
+
+  handlers:
+    - name: restart apache
+      action: service name=apache2 state=restarted
+    - name: restart mysql
+      action: service name=mysql state=restarted
