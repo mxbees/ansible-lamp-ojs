@@ -1,4 +1,4 @@
-##Ansible Playbook for OJS3 Beta Testing
+## Ansible Playbook for OJS3 Beta Testing
 
 First, I'd like to mention that [@pesterhazy's LAMP ansible playbook][pesterhazy] was an invaluable resource for guiding me through this process.
 
@@ -6,7 +6,7 @@ The main purpose for this playbook is for my beta testing of [OJS3 by PKP][ojs3]
 
 I have no doubt that this playbook could likely be easily adapted for deployment to production environments, since it really doesn't do anything but install a LAMP stack and grab OJS.
 
-##Requirements
+## Requirements
 
 This depends on the following bits of software:
 
@@ -16,7 +16,7 @@ This depends on the following bits of software:
 
 You'll need to install all of these on your local machine before using this playbook (be sure to install the guest additions for virtual box).
 
-##How to use the playbook
+## How to use the playbook
 
 1. After installing the above dependencies, clone this repo wherever you'd like to have the shared folder with the virtual machine.
 2. Enter in the terminal `vagrant up`.
@@ -37,7 +37,7 @@ You'll need to install all of these on your local machine before using this play
     - You might get a warning that OJS was unable to write to config.inc.php. If you get this screen, copy the config and paste it into over the config.inc.php.
     - And, voila! You should have a working instance of OJS3b.
     
-##What's in this repo:
+## What's in this repo:
 
 - default: the apache config for the virtual machine. Should change this if you change the document root in playbook.yml.
 - playbook.yml: the ansible playbook for provisioning the virtual machine. This is the file you edit if you want add a root password for mysql, and other such things.
